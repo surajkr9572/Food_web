@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/surajkr9572/Food_web#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
   }
 }
