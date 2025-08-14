@@ -1,11 +1,12 @@
 {
-  "name": "package.json",
+  "name": "food_web",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000r\u0000e\u0000s\u0000t\u0000a\u0000u\u0000r\u0000a\u0000n\u0000t\u0000-\u0000w\u0000e\u0000b\u0000s\u0000i\u0000t\u0000e\u0000\r\u0000 \u0000",
+  "description": "Restaurant website",
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo \"No build step required\""
   },
   "repository": {
     "type": "git",
