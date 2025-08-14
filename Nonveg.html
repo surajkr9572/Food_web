@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burger</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="/public/style.css" />
+</head>
+
+<body>
+  <header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>APNI RASOI</a>
+
+    <div id="menu-bar" class="fas fa-bars"></div>
+
+    <nav class="navbar">
+      <nav class="navbar">
+        <a href="home.html">home</a>
+        <a href="home.html">speciality</a>
+        <a href="home.html">popular</a>
+        <a href="home.html">gallery</a>
+        <a href="home.html">review</a>
+        <a href="order.html">order</a>
+        <img src="/images/profile.jpeg" id="profile" onclick="profilefun()"></img>
+        <div id="navdiv"></div>
+      </nav>
+  </header>
+  <div class="main">
+    <div class="container" id="container"></div>
+  </div>
+  <script>
+    let c = 0;
+    function profilefun() {
+      let div = document.getElementById("navdiv")
+      div.innerHTML = '<ul><li><h4><b><form action="/profilePage" method="get"><a href="profile.html">Profile</form></a></b></h4><b></li><li><h4><b><a href="/logout">Logout</a></b></h4></li>'
+  
+
+      if (c % 2 == 0) {
+        div.style.display = "block";
+        div.style.width = "110px",
+          div.style.height = "auto",
+          div.style.position = "absolute",
+          div.style.marginLeft = "500px",
+          div.style.border = "1px solid black",
+          div.style.borderRadius = "5px"
+        div.style.padding = "1px"
+
+        c++;
+      } else {
+        div.style.display = "none";
+        c++;
+      }
+    }
+
+    let Nonveg;
+    var container = document.getElementById("container");
+    fetch("/product")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const userEmail = data.useremail;
+        Nonveg = data.products;
+        let user = data.profile;
+        if (user == null) {
+          window.location.href = "login.html";
+        } else {
+          let filterNonveg = Nonveg.filter((item) => {
+            if (item.type === "Non-Veg") {
+              return true;
+            }
+          });
+
+          for (var i = 0; i < filterNonveg.length; i++) {
+            var div = document.createElement("div");
+            div.setAttribute("class", "second");
+
+            var h2 = document.createElement("h2");
+            h2.innerHTML = filterNonveg[i].Name;
+            h2.classList.add("center-text");
+            h2.setAttribute("id", "red");
+            div.appendChild(h2);
+
+            var image = document.createElement("img");
+            image.setAttribute("src", filterNonveg[i].img);
+            image.setAttribute("class", "imgg center-text");
+            div.appendChild(image);
+
+            var price = document.createElement("h2");
+            price.innerHTML = filterNonveg[i].price + "₹";
+            price.classList.add("center-text");
+            div.appendChild(price);
+
+            var starRating = document.createElement("div");
+            starRating.setAttribute("class", "star center-text");
+            starRating.innerHTML =
+              filterNonveg[i].rating +
+              '<i class="fas fa-star "></i>'.repeat(filterNonveg[i].rating) +
+              " (" +
+              filterNonveg[i].reviews +
+              ")";
+            div.appendChild(starRating);
+
+            var text = document.createElement("div");
+            text.setAttribute("class", "text center-text");
+            text.innerHTML =
+              "<p>" +
+              filterNonveg[i].time +
+              " mins</p>" +
+              "<p>" +
+              filterNonveg[i].des +
+              "</p>" +
+              `<center><a href="order.html" class="btn" id="orderBtn_${i}">order now</a></center>`;
+            div.appendChild(text);
+
+            container.appendChild(div);
+          }
+          for (let i = 0; i < filterNonveg.length; i++) {
+            const orderBtn = document.getElementById(`orderBtn_${i}`);
+            orderBtn.addEventListener("click", () => {
+              let obj = {};
+              obj.Name = filterNonveg[i].Name;
+              obj.type = filterNonveg[i].type;
+              obj.price = filterNonveg[i].price;
+              obj.img = filterNonveg[i].img;
+              obj.rating = filterNonveg[i].rating;
+              obj.reviews = filterNonveg[i].reviews;
+              obj.time = filterNonveg[i].time;
+              obj.email = userEmail;
+              sendOrder(obj);
+            });
+          }
+        }
+      });
+    function uuidv4() {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function (c) {
+          var r = (Math.random() * 16) | 0,
+            v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
+    }
+
+    function sendOrder(obj) {
+      const trackingId = uuidv4();
+      obj.trackingId = trackingId;
+      let orderdata = "orderData";
+      obj.orderdata = orderdata;
+      fetch("/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
+      })
+        .then((response) => response.text())
+        .then((message) => {
+          console.log(message);
+        })
+        .catch((error) => console.error(error));
+    }
+  </script>
+</body>
+
+</html>

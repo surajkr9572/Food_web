@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="styleadmin.css">
+    <title>food website</title>
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>APNI RASOI</a>
+        <nav class="navbar">
+            <a href="admin.html">Add data</a>
+            <img src="/images/profile.jpeg" id="profile" onclick="profilefun()"></img>
+            <div id="navdiv"></div>
+        </nav>
+    </header>
+    <div id="main"></div>
+    <script>
+        let c = 0;
+        function profilefun() {
+            console.log(c)
+            let navdiv = document.getElementById("navdiv")
+            navdiv.innerHTML = '<ul><li><h4><b><form action="/profilePage" method="get"><a href="adminprofile.html">Profile</form></a></b></h4><b></li><li><h4><b><a href="/logout">Logout</a></b></h4></li>'
+          
+
+            if (c % 2 == 0) {
+                navdiv.style.display = "block";
+                navdiv.style.width = "auto";
+                navdiv.style.height = "auto";
+                navdiv.style.position = "absolute";
+                navdiv.style.marginLeft = "80%";
+                navdiv.style.border = "1px solid black";
+                navdiv.style.borderRadius = "5px";
+                navdiv.style.padding = "1px";
+
+                c++;
+            } else {
+                navdiv.style.display = "none";
+                c++;
+            }
+        }
+        let profile;
+        let useremail;
+        let outdiv = document.getElementById("main");
+        fetch("/allproduct")
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+              //  console.log(data)
+                profile = data.profile;
+                useremail = data.useremail;
+                let user = profile;
+                if (user == null) {
+                    window.location.href = "login.html";
+                }
+                else {
+                    data.products.forEach(obj => {
+                        let div = document.createElement("div");
+                        div.classList.add("product-container");
+
+                        let imgdiv = document.createElement("img");
+                        imgdiv.setAttribute("src", obj.img);
+                        imgdiv.setAttribute("id", "imgset");
+
+                        let productInfo = document.createElement("div");
+                        productInfo.classList.add("product-info");
+
+                        let productspan = document.createElement("span");
+                        productspan.innerHTML = `<b>Name:</b> ${obj.Name}`;
+
+                        let pricespan = document.createElement("span");
+                        pricespan.innerHTML = `<b>Price:</b> ${obj.price}`;
+
+                        let delbtn = document.createElement("button");
+                        delbtn.setAttribute("id", "delbtn");
+                        delbtn.innerHTML = `<b>Delete</b> <i class="fas fa-trash"></i>`;
+                        delbtn.addEventListener("click", function () {
+                            div.remove();
+                            let obj1 = {};
+                            obj1.Name = obj.Name;
+                            obj1.img = obj.img;
+                            obj1.price = obj.price;
+                            console.log(obj1.name)
+                            fetch("/admindelete", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(obj1),
+                            })
+                                .then((response) => response.text())
+                                .then((message) => {
+                                    alert("Item delete successfully!");
+                                })
+                        });
+
+                        productInfo.appendChild(productspan);
+                        productInfo.appendChild(pricespan);
+                      
+                        productInfo.appendChild(delbtn);
+
+                        div.appendChild(imgdiv);
+                        div.appendChild(productInfo);
+
+                        outdiv.appendChild(div);
+
+                    });
+                }
+            })
+    </script>
+
+</body>
+
+</html>

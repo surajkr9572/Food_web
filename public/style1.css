@@ -1,0 +1,262 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap");
+
+:root {
+  --red: #ff3838;
+}
+
+* {
+  font-family: "Nunito", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: all 0.2s linear;
+}
+#profile{
+  width: 20px;
+  height: 20px;
+  animation:infinite;
+  z-index:1;
+  margin-left: 22px;
+}
+
+*::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: #f7f7f7;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 2rem 9%;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+header .logo {
+  font-size: 2.5rem;
+  font-weight: bolder;
+  color: #666;
+}
+
+header .logo i {
+  padding-right: 0.5rem;
+  color: var(--red);
+}
+
+header .navbar a {
+  font-size: 2rem;
+  margin-left: 2rem;
+  color: #666;
+}
+
+header .navbar a:hover {
+  color: var(--red);
+}
+
+#menu-bar {
+  font-size: 3rem;
+  cursor: pointer;
+  color: #666;
+  border: 0.1rem solid #666;
+  border-radius: 0.3rem;
+  padding: 0.5rem 1.5rem;
+  display: none;
+}
+
+@media (max-width: 991px) {
+  html {
+    font-size: 55%;
+  }
+  header {
+    padding: 2rem;
+  }
+  section {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #menu-bar {
+    display: initial;
+  }
+
+  header .navbar {
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    right: 0px;
+    background: #f7f7f7;
+    border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  }
+  header .navbar.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  header .navbar a {
+    margin: 1.5rem;
+    padding: 1.5rem;
+    display: block;
+    border: 0.2rem solid rgba(0, 0, 0, 0.1);
+    border-left: 0.5rem solid var(--red);
+    background: #fff;
+  }
+
+  .container {
+    width: 100%;
+    margin-top: 5%;
+  }
+
+  .cart-item {
+    width: 90%;
+  }
+
+  #totalPrice {
+    width: 90%;
+    right: 5%;
+  }
+}
+
+.second,
+.second1 {
+  margin-top: 3rem;
+  width: 70%;
+  max-width: 70%;
+  box-shadow: 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  border: 0.1rem solid rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .second,
+  .second1 {
+    width: 90%;
+    max-width: 90%;
+    margin: 3rem auto;
+  }
+}
+
+.imgg {
+  margin-left: 2rem;
+  margin-top: 3rem;
+  width: 20rem;
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  float: left;
+}
+
+#red {
+  margin-right: 2rem;
+  margin-top: 3rem;
+  float: right;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10%;
+}
+
+.cart-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 90%;
+  border: 1px solid black;
+  padding: 1.5rem;
+  border-radius: 3px;
+  margin-right: 20%;
+}
+
+@media (min-width: 768px) {
+  .cart-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 78%;
+  }
+}
+
+.remove-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+}
+
+.quantity button {
+  font-size: 20px;
+  padding: 5px 10px;
+  margin-right: 10px;
+}
+
+.quantity span {
+  font-size: 18px;
+}
+
+#totalPrice {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 18rem;
+  height: 140px;
+  border: 1px solid black;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 20px;
+  font-weight: bolder;
+  cursor: pointer;
+  z-index: 999;
+  background-color: #1f5da89f;
+  color: white;
+  flex-direction: column;
+  margin-right: 2rem;
+}
+
+@media (min-width: 768px) {
+  #totalPrice {
+    width: 25%;
+  }
+}
+
+.btn {
+  background-color: #07de4f;
+  color: white;
+}
+.btn:hover {
+  background-color: #ff3838;
+}

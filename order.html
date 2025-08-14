@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.js"
+    integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"
+    integrity="sha512-bFs/fR8nAsJfQ78MlA62WFRkKJVwMeWw2CQ50jFicsyCwS3WCoJ3KRSfEuRSjvWSQJD4UDFZCkbBB90ugwChYg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/public/style1.css" /> 
+</head>
+
+<body>
+  <header>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>APNI RASOI</a>
+    <div id="menu-bar" class="fas fa-bars"></div>
+        <nav class="navbar">
+      <nav class="navbar">
+        <a href="home.html">home</a>
+        <a href="home.html">speciality</a>
+        <a href="home.html">popular</a>
+        <a href="home.html">gallery</a>
+        <a href="home.html">review</a>
+        <a href="order.html">order</a>
+        <img src="/images/profile.jpeg" id="profile" onclick="profilefun()"></img>
+        <div id="navdiv"></div>
+      </nav>
+  </header>
+  <div class="main">
+    <div class="container" id="container"></div>
+  </div>
+  <script>
+    let c = 0;
+    function profilefun() {
+      let div = document.getElementById("navdiv")
+      div.innerHTML = '<ul><li><h4><b><form action="/profilePage" method="get"><a href="profile.html">Profile</form></a></b></h4><b></li><li><h4><b><a href="/logout">Logout</a></b></h4></li>'
+     
+
+      if (c % 2 == 0) {
+        div.style.display = "block";
+        div.style.width = "110px",
+          div.style.height = "auto",
+          div.style.position = "absolute",
+          div.style.marginLeft = "500px",
+          div.style.border = "1px solid black",
+          div.style.borderRadius = "5px"
+        div.style.padding = "1px"
+
+        c++;
+      } else {
+        div.style.display = "none";
+        c++;
+      }
+    }
+    var totalPriceDiv = document.createElement("div");
+    totalPriceDiv.setAttribute("id", "totalPrice");
+    container.appendChild(totalPriceDiv);
+    let rupess = 0;
+    let totalprice = 0;
+    fetch("/orderProduct")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const userEmail = data.useremail;
+        Order = data.products;
+        let profile = data.profile;
+       
+        if (profile == null) {
+          window.location.href = "login.html";
+        } else {
+          let filterOrder = Order.filter((item) => {
+            if (item.orderdata === "orderData" && item.email == userEmail) {
+              return true;
+            }
+          });
+          if (filterOrder.length === 0) {
+            totalPriceDiv.style.display = "none";
+            let message = document.createElement("h2");
+            message.innerHTML = "Your Cart is Empty";
+            message.style.textAlign = "center";
+            container.appendChild(message);
+          } else {
+            filterOrder.forEach((item) => {
+              var div = document.createElement("div");
+              div.setAttribute("class", "cart-item");
+
+              var h2 = document.createElement("h2");
+              h2.innerHTML = item.Name;
+              div.appendChild(h2);
+
+              var image = document.createElement("img");
+              image.setAttribute("src", item.img);
+              image.setAttribute("height", "100");
+              let dd = document.createElement("div");
+              dd.setAttribute("class", "set");
+              dd.appendChild(image);
+              div.appendChild(dd);
+
+              var price = document.createElement("h2");
+              price.setAttribute("id", "pri");
+              price.innerHTML = item.price + "₹";
+              rupess = item.price;
+              div.appendChild(price);
+              totalprice += parseInt(rupess);
+
+              var quantityDiv = document.createElement("div");
+              quantityDiv.setAttribute("class", "quantity");
+
+              var decrementButton = document.createElement("button");
+              decrementButton.textContent = "-";
+              quantityDiv.appendChild(decrementButton);
+
+              var quantityText = document.createElement("span");
+              quantityText.innerHTML=item.quantity;
+              quantityDiv.appendChild(quantityText);
+
+              var incrementButton = document.createElement("button");
+              incrementButton.textContent = "+";
+              quantityDiv.appendChild(incrementButton);
+
+              div.appendChild(quantityDiv);
+
+              var removeButton = document.createElement("button");
+              removeButton.textContent = "Remove";
+              removeButton.setAttribute("class", "remove-btn");
+              removeButton.addEventListener("click", function () {
+                div.remove();
+                let obj = {};
+                obj.Name = item.Name;
+                obj.img = item.img;
+                obj.price = item.price;
+                fetch("/delete", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(obj),
+                })
+                  .then((response) => response.text())
+                  .then((message) => {
+                    console.log(message);
+                    updateTotalPrice();
+                    if (
+                      container.querySelectorAll(".cart-item").length === 0
+                    ) {
+                      container.innerHTML = "";
+                      totalPriceDiv.style.display = "none";
+                      let message = document.createElement("h2");
+                      message.innerHTML = "Your Cart is Empty";
+                      message.style.textAlign = "center";
+                      container.appendChild(message);
+                    }
+                  })
+                  .catch((error) => console.error(error));
+              });
+              div.appendChild(removeButton);
+
+              container.appendChild(div);
+
+              decrementButton.addEventListener("click", function () {
+                var currentQuantity = parseInt(quantityText.textContent);
+                if (currentQuantity > 1) {
+                  currentQuantity--;
+                  quantityText.textContent = currentQuantity;
+                  updateTotalPrice();
+                }
+              });
+
+              incrementButton.addEventListener("click", function () {
+                var currentQuantity = parseInt(quantityText.textContent);
+                currentQuantity++;
+                quantityText.textContent = currentQuantity;
+                updateTotalPrice();
+              });
+            });
+          }
+        }
+        totalPriceDiv.textContent =
+          "Total Price: " + totalprice.toFixed(2) + "₹";
+        var checkoutButton = document.createElement("button");
+        checkoutButton.textContent = "Checkout";
+        checkoutButton.setAttribute("class", "btn");
+        let a = document.createElement("a");
+        a.setAttribute("href", "payment.html");
+        a.appendChild(checkoutButton);
+        totalPriceDiv.appendChild(a);
+        container.appendChild(totalPriceDiv);
+      });
+
+    function updateTotalPrice() {
+      var total = 0;
+      totalPriceDiv.textContent = "";
+      var cartItems = document.querySelectorAll(".cart-item");
+      cartItems.forEach((item) => {
+        let priceString = item.querySelector("#pri").textContent;
+        let price = parseFloat(priceString.replace("₹", ""));
+        let quantity = parseInt(
+          item.querySelector(".quantity span").textContent
+        );
+        total += price * quantity;
+      });
+      totalPriceDiv.textContent = "Total Price:" + total.toFixed(2) + "₹";
+      var checkoutButton = document.createElement("button");
+      checkoutButton.textContent = "Checkout";
+      checkoutButton.setAttribute("class", "btn");
+      let a = document.createElement("a");
+      a.setAttribute("href", "payment.html");
+      a.appendChild(checkoutButton);
+      totalPriceDiv.appendChild(a);
+      container.appendChild(totalPriceDiv);
+    }
+   
+  </script>
+</body>
+
+</html>

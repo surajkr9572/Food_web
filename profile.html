@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js"
+        integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.js"
+        integrity="sha512-bFs/fR8nAsJfQ78MlA62WFRkKJVwMeWw2CQ50jFicsyCwS3WCoJ3KRSfEuRSjvWSQJD4UDFZCkbBB90ugwChYg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/style.css">
+    <title>food website</title>
+    <style>
+        #changebtn {
+            margin-left: 15%;
+            background-color: green;
+            padding: 1%;
+            border-radius: 5px;
+            color: #f2f2f2;
+        }
+
+        #changebtn:hover {
+            background-color: red;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #maindiv {
+            margin-left: 28%;
+            margin-right: 30%;
+
+            width: 40%;
+            height: 50%;
+            padding: 20px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-top: 11%;
+            margin-bottom: 4%;
+        }
+
+        .change-password {
+            display: none;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>APNI RASOI</a>
+        <div id="menu-bar" class="fas fa-bars"> </div>
+        <nav class="navbar">
+            <a href="/home.html">home</a>
+            <a href="/home.html">speciality</a>
+            <a href="/home.html">popular</a>
+            <a href="/home.html">gallery</a>
+            <a href="/home.html">review</a>
+            <a href="order.html">order</a>
+        </nav>
+    </header>
+
+    <div id="maindiv"></div>
+
+    <script>
+        let maindiv = document.getElementById("maindiv");
+        fetch("/profile")
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                let table = document.createElement("table");
+                let tbody = document.createElement("tbody");
+                Object.entries(data).forEach(([key, value]) => {
+                    let row = document.createElement("tr");
+                    let labelCell = document.createElement("td");
+                    labelCell.textContent = key;
+                    row.appendChild(labelCell);
+                    let dataCell = document.createElement("td");
+                    if (key === "Password") {
+                        let passwordLength = value.length;
+                        let passwordHidden = "*".repeat(passwordLength);
+                        dataCell.textContent = passwordHidden;
+                    }
+                    else {
+                        dataCell.textContent = value;
+                    }
+                    row.appendChild(dataCell);
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+                maindiv.appendChild(table);
+                let row = document.createElement("tr");
+                let labelCell = document.createElement("td");
+                labelCell.textContent = "Change Password";
+                row.appendChild(labelCell);
+                let dataCell = document.createElement("td");
+                let changePasswordInput = document.createElement("input");
+                changePasswordInput.setAttribute("type", "password");
+                changePasswordInput.setAttribute("placeholder", "New Password");
+                changePasswordInput.setAttribute("name", "change_password");
+                let btn = document.createElement("button");
+                btn.setAttribute("id", "changebtn");
+                btn.innerHTML = "<b>Apply</b>";
+                dataCell.appendChild(changePasswordInput);
+                dataCell.appendChild(btn)
+                row.appendChild(dataCell);
+                tbody.appendChild(row);
+                btn.onclick = function () {
+                    let obj = {};
+                    obj.password = changePasswordInput.value;
+                    //console.log(obj.password);
+                    obj.email = data.Email;
+                    console.log(obj.email);
+                    senddata(obj);
+                };
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        function senddata(obj) {
+            fetch("/changeprofile", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(obj),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        alert("Password changed successfully!");
+                        window.location.href = "/home.html"; 
+                    } else {
+                        throw new Error("Password change failed");
+                    }
+                })
+                .catch((error) => console.error(error));
+
+        }
+
+    </script>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>company</h4>
+                    <ul>
+                        <li><a href="#">about us</a></li>
+                        <li><a href="#">our services</a></li>
+                        <li><a href="#">privacy policy</a></li>
+                        <li><a href="#">affiliate program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>get help</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">shipping</a></li>
+                        <li><a href="#">returns</a></li>
+                        <li><a href="#">order status</a></li>
+                        <li><a href="#">payment options</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>online shop</h4>
+                    <ul>
+                        <li><a href="#">watch</a></li>
+                        <li><a href="#">bag</a></li>
+                        <li><a href="#">shoes</a></li>
+                        <li><a href="#">dress</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>follow us</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
