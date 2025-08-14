@@ -2,7 +2,7 @@
   "name": "food_web",
   "version": "1.0.0",
   "description": "Restaurant website",
-  "main": "script.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/surajkr9572/Food_web#readme",
   "dependencies": {
-    "exrpess": "^0.0.1-security"
+    "express": "^4.19.2"
   }
 }
