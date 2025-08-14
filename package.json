@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/surajkr9572/Food_web/issues"
   },
-  "homepage": "https://github.com/surajkr9572/Food_web#readme"
+  "homepage": "https://github.com/surajkr9572/Food_web#readme",
+  "dependencies": {
+    "exrpess": "^0.0.1-security"
+  }
 }
